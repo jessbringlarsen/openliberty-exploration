@@ -12,6 +12,6 @@ public class Service {
     @CacheResult
     public String getARandomStringFrom(@CacheKey String name) {
         System.out.println("Cache miss!");
-        return UUID.fromString(name).toString();
+        return UUID.randomUUID().toString();
     }
 }

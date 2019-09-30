@@ -4,6 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 @RequestScoped
@@ -14,7 +15,8 @@ public class CachedResource {
     private Service service;
 
     @GET
-	public Response get() {
-		return Response.ok(service.getARandomStringFrom("testing")).build();
+    @Path("{name}")
+	public Response get(@PathParam("name") String name) {
+		return Response.ok(service.getARandomStringFrom(name)).build();
 	}
 }
