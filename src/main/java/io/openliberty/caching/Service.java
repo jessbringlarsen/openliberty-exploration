@@ -1,11 +1,12 @@
 package io.openliberty.caching;
 
-import java.util.UUID;
-
 import javax.cache.annotation.CacheDefaults;
 import javax.cache.annotation.CacheKey;
 import javax.cache.annotation.CacheResult;
+import javax.ejb.Singleton;
+import java.util.UUID;
 
+@Singleton
 @CacheDefaults(cacheName = "io.openliberty.caching")
 public class Service {
 
