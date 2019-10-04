@@ -1,5 +1,8 @@
 package io.openliberty.caching;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -15,8 +18,18 @@ public class CachedResource {
     private Service service;
 
     @GET
-    @Path("{name}")
-	public Response get(@PathParam("name") String name) {
-		return Response.ok(service.getARandomStringFrom(name)).build();
+	public Response getLatest() {
+		return Response.ok(service.getARandomNumber()).build();
+	}
+
+    /**
+     * 
+     * @param date in the format yyyy-MM-dd e.g. '2011-12-03'
+     * @return
+     */
+    @GET
+    @Path("{date}")
+	public Response get(@PathParam("date") String date) {
+		return Response.ok(service.getARandomNumberFrom(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))).build();
 	}
 }

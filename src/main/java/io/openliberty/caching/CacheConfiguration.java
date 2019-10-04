@@ -9,15 +9,17 @@ import javax.cache.expiry.Duration;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
+
+import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
-public class CacheConfiguration {
+class CacheConfiguration {
 
     public void initialize(@Observes @Initialized(ApplicationScoped.class) Object object) {
         CacheManager manager = Caching.getCachingProvider().getCacheManager();
-        MutableConfiguration<Object, String> configuration = new MutableConfiguration<Object, String>()
-                .setTypes(Object.class, String.class).setStoreByValue(false)
+        MutableConfiguration<Object, BigDecimal> configuration = new MutableConfiguration<Object, BigDecimal>()
+                .setTypes(Object.class, BigDecimal.class).setStoreByValue(false)
                 .setStatisticsEnabled(true)
                 .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, 5)));
 
