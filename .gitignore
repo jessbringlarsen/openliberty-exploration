@@ -17,3 +17,7 @@ MANIFEST.MF
 
 # Zip files
 *.zip
+
+# Intellij
+*.iml
+.idea/
