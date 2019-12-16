@@ -157,6 +157,10 @@
           <bootstrapProperties>
             <default.http.port>${testServerHttpPort}</default.http.port>
             <default.https.port>${testServerHttpsPort}</default.https.port>
+            <com.ibm.ws.logging.max.file.size>100</com.ibm.ws.logging.max.file.size>
+            <com.ibm.ws.logging.max.files>3</com.ibm.ws.logging.max.files>
+            <com.ibm.ws.logging.console.log.level>OFF</com.ibm.ws.logging.console.log.level>
+            <com.ibm.ws.logging.copy.system.streams>false</com.ibm.ws.logging.copy.system.streams>
           </bootstrapProperties>
         </configuration>
       </plugin>
