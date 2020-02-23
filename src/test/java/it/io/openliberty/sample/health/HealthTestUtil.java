@@ -11,82 +11,43 @@
 
 package it.io.openliberty.sample.health;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
-
-import org.apache.cxf.jaxrs.provider.jsrjsonp.JsrJsonpProvider;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public class HealthTestUtil {
 
   private static String port;
   private static String baseUrl;
   private final static String HEALTH_ENDPOINT = "health";
-  public static final String INV_MAINTENANCE_FALSE = "io_openliberty_sample_system_inMaintenance\":false";
-  public static final String INV_MAINTENANCE_TRUE = "io_openliberty_sample_system_inMaintenance\":true";
+  public static final String INV_MAINTENANCE_FALSE = "{\"config_ordinal\":500,\"io_openliberty_sample_system_inMaintenance\":false,\"io_openliberty_sample_testConfigOverwrite\":\"CustomSource\"}";
+  public static final String INV_MAINTENANCE_TRUE = "{\"config_ordinal\":500,\"io_openliberty_sample_system_inMaintenance\":true,\"io_openliberty_sample_testConfigOverwrite\":\"CustomSource\"}";
 
   static {
     port = System.getProperty("liberty.test.port");
     baseUrl = "http://localhost:" + port + "/";
   }
 
-  public static JsonArray connectToHealthEnpoint(int expectedResponseCode) {
-    String healthURL = baseUrl + HEALTH_ENDPOINT;
-    Client client = ClientBuilder.newClient().register(JsrJsonpProvider.class);
-    Response response = client.target(healthURL).request().get();
-    assertEquals("Response code is not matching " + healthURL, expectedResponseCode,
-                 response.getStatus());
-    JsonArray servicesStates = response.readEntity(JsonObject.class).getJsonArray("checks");
-    response.close();
-    client.close();
-    return servicesStates;
+  public static String getBaseUrl() {
+    return baseUrl;
   }
 
-  public static String getActualState(String service, JsonArray servicesStates) {
-    String state = "";
-    for (Object obj : servicesStates) {
-      if (obj instanceof JsonObject) {
-        if (service.equals(((JsonObject) obj).getString("name"))) {
-          state = ((JsonObject) obj).getString("state");
-        }
-      }
-    }
-    return state;
+  public static void setMaintenanceMode() {
+    setMaintenanceMode(INV_MAINTENANCE_TRUE);
   }
 
-  public static void changeProperty(String oldValue, String newValue) {
+  public static void unsetMaintenanceMode() {
+    setMaintenanceMode(INV_MAINTENANCE_FALSE);
+  }
+
+  public static void setMaintenanceMode(String value) {
     try {
-      String fileName = System.getProperty("user.dir").split("target")[0]
-          + "/resources/CustomConfigSource.json";
-      BufferedReader reader = new BufferedReader(new FileReader(new File(fileName)));
-      String line = "";
-      String oldContent = "", newContent = "";
-      while ((line = reader.readLine()) != null) {
-        oldContent += line + "\r\n";
-      }
-      reader.close();
-      newContent = oldContent.replaceAll(oldValue, newValue);
-      FileWriter writer = new FileWriter(fileName);
-      writer.write(newContent);
-      writer.close();
+      Files.write(Paths.get(System.getProperty("user.dir").split("target")[0] + "/resources/CustomConfigSource.json"), value.getBytes(), TRUNCATE_EXISTING);
       Thread.sleep(600);
-    } catch (Exception e) {
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
   }
-
-  public static void cleanUp() {
-    changeProperty(INV_MAINTENANCE_TRUE, INV_MAINTENANCE_FALSE);
-  }
-
 }

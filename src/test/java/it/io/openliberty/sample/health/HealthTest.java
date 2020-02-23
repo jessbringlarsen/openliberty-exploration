@@ -11,56 +11,37 @@
 
 package it.io.openliberty.sample.health;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashMap;
-import javax.json.JsonArray;
+import io.restassured.RestAssured;
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Test;
 
 public class HealthTest {
 
-  private JsonArray servicesStates;
-  private static HashMap<String, String> dataWhenServicesUP, dataWhenServicesDown;
+    @Test
+    public void testIfServicesAreUp() {
+        HealthTestUtil.unsetMaintenanceMode();
 
-  static {
-    dataWhenServicesUP = new HashMap<String, String>();
-    dataWhenServicesDown = new HashMap<String, String>();
-    
+        RestAssured.when()
+                .get(HealthTestUtil.getBaseUrl() + "health")
+                .then()
+                .statusCode(200)
+                .body("outcome", Matchers.equalTo("UP"));
+    }
 
-    dataWhenServicesUP.put("SystemResource", "UP");
-    
+    @Test
+    public void testIfServicesAreDown() {
+        HealthTestUtil.setMaintenanceMode();
 
-    dataWhenServicesDown.put("SystemResource", "DOWN");
-    
-  }
+        RestAssured.when()
+                .get(HealthTestUtil.getBaseUrl() + "health")
+                .then()
+                .statusCode(503)
+                .body("outcome", Matchers.equalTo("DOWN"));
+    }
 
-  @Test
-  public void testIfServicesAreUp() {
-    servicesStates = HealthTestUtil.connectToHealthEnpoint(200);
-    checkServicesStates(dataWhenServicesUP, servicesStates);
-  }
-
-  @Test
-  public void testIfServicesAreDown() {
-    servicesStates = HealthTestUtil.connectToHealthEnpoint(200);
-    checkServicesStates(dataWhenServicesUP, servicesStates);
-    HealthTestUtil.changeProperty(HealthTestUtil.INV_MAINTENANCE_FALSE, HealthTestUtil.INV_MAINTENANCE_TRUE);
-    //servicesStates = HealthTestUtil.connectToHealthEnpoint(503);
-    //checkServicesStates(dataWhenServicesDown, servicesStates);
-  }
-
-  private void checkServicesStates(HashMap<String, String> testData, JsonArray servicesStates) {
-    testData.forEach((service, expectedState) -> {
-      assertEquals("The state of " + service + " service is not matching the ", expectedState,
-                   HealthTestUtil.getActualState(service, servicesStates));
-    });
-
-  }
-
-  @After
-  public void teardown() {
-    HealthTestUtil.cleanUp();
-  }
-
+    @After
+    public void teardown() {
+        HealthTestUtil.unsetMaintenanceMode();
+    }
 }
