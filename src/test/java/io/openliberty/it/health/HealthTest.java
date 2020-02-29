@@ -9,7 +9,7 @@
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
 
-package it.io.openliberty.sample.health;
+package io.openliberty.it.health;
 
 import io.restassured.RestAssured;
 import org.hamcrest.Matchers;

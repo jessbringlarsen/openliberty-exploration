@@ -9,9 +9,8 @@
  *     IBM Corporation - Initial implementation
  *******************************************************************************/
 
-package it.io.openliberty.sample.health;
+package io.openliberty.it.health;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -26,8 +25,7 @@ public class HealthTestUtil {
   public static final String INV_MAINTENANCE_TRUE = "{\"config_ordinal\":500,\"io_openliberty_sample_system_inMaintenance\":true,\"io_openliberty_sample_testConfigOverwrite\":\"CustomSource\"}";
 
   static {
-    port = System.getProperty("liberty.test.port");
-    baseUrl = "http://localhost:" + port + "/";
+    baseUrl = "http://localhost:9080/";
   }
 
   public static String getBaseUrl() {
@@ -46,7 +44,7 @@ public class HealthTestUtil {
     try {
       Files.write(Paths.get(System.getProperty("user.dir").split("target")[0] + "/resources/CustomConfigSource.json"), value.getBytes(), TRUNCATE_EXISTING);
       Thread.sleep(600);
-    } catch (IOException | InterruptedException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
