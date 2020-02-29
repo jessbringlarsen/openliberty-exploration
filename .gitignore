@@ -21,3 +21,4 @@ MANIFEST.MF
 # Intellij
 *.iml
 .idea/
+.history
