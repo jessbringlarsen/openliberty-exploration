@@ -30,6 +30,5 @@ class CacheConfiguration {
         manager.createCache("io.openliberty.caching", configuration);
 
         logger.info("Cache initialized.");
-        System.out.println("Cache initialized-2");
     }
 }
