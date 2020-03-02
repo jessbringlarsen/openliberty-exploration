@@ -16,7 +16,7 @@ import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Test;
 
-public class HealthTest {
+public class HealthTestIT {
 
     @Test
     public void testIfServicesAreUp() {
