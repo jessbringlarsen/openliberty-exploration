@@ -16,28 +16,29 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
+import org.eclipse.microprofile.health.Readiness;
 
-@Health
+@Readiness
 @ApplicationScoped
-public class SystemHealth implements HealthCheck {
-	
-	@Inject
-	SystemConfig systemConfig;
-	
-	public boolean isHealthy() {
-	    if (systemConfig.isInMaintenance()) {
-	      return false;
-	    }
-	     return true;
-	  }
-	
-  @Override
-  public HealthCheckResponse call() {
-    if (!isHealthy()) {
-      return HealthCheckResponse.named(SystemResource.class.getSimpleName())
-    		  .withData("services","not available").down().build();
+public class SystemReadiness implements HealthCheck {
+
+    @Inject
+    SystemConfig systemConfig;
+
+    public boolean isHealthy() {
+        if (systemConfig.isInMaintenance()) {
+            return false;
+        }
+        return true;
     }
-    return HealthCheckResponse.named(SystemResource.class.getSimpleName())
-            .withData("services","available").up().build();
-  }
+
+    @Override
+    public HealthCheckResponse call() {
+        if (!isHealthy()) {
+            return HealthCheckResponse.named(SystemReadiness.class.getSimpleName())
+                    .withData("services", "not available").down().build();
+        }
+        return HealthCheckResponse.named(SystemReadiness.class.getSimpleName())
+                .withData("services", "available").up().build();
+    }
 }

@@ -17,7 +17,6 @@ import org.junit.After;
 import org.junit.Test;
 
 public class HealthTest {
-
     @Test
     public void testIfServicesAreUp() {
         HealthTestUtil.unsetMaintenanceMode();
