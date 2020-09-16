@@ -9,6 +9,9 @@ import javax.cache.annotation.CacheResult;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Example service with cached response. Notice the setup in META-INF/beans.xml
+ */
 @CacheDefaults(cacheName = "io.openliberty.caching")
 public class Service {
 
